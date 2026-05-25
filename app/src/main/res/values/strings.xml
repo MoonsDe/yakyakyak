@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">약약약</string>
+    <string name="tab_home">홈</string>
+    <string name="tab_medications">내 약</string>
+    <string name="add_medication">약 등록</string>
+    <string name="edit_medication">약 수정</string>
+    <string name="save">저장하기</string>
+    <string name="delete">삭제</string>
+    <string name="cancel">취소</string>
+    <string name="today_schedule">오늘 복용 스케줄</string>
+    <string name="no_medications_today">오늘 복용할 약이 없어요</string>
+    <string name="taken">복용 완료</string>
+    <string name="not_taken">미복용</string>
+</resources>

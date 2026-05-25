@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.yakyakyak.ui.home.HomeFragment"
+        android:label="홈"
+        tools:layout="@layout/fragment_home"
+        xmlns:tools="http://schemas.android.com/tools" />
+
+    <fragment
+        android:id="@+id/medicationListFragment"
+        android:name="com.example.yakyakyak.ui.medication.MedicationListFragment"
+        android:label="내 약"
+        tools:layout="@layout/fragment_medication_list"
+        xmlns:tools="http://schemas.android.com/tools" />
+
+</navigation>
