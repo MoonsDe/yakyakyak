@@ -11,4 +11,19 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="내 약" />
 
+    <item
+        android:id="@+id/historyFragment"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="기록" />
+
+    <item
+        android:id="@+id/memoFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="메모" />
+
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@android:drawable/ic_search_category_default"
+        android:title="검색" />
+
 </menu>

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.yakyakyak.R
 import com.example.yakyakyak.data.Medication
 import com.example.yakyakyak.databinding.ActivityAddEditMedicationBinding
+import com.example.yakyakyak.ui.search.CommonDrugs
 import com.example.yakyakyak.viewmodel.MedicationViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,6 +35,7 @@ class AddEditMedicationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+        setupMealTimingSpinner()
         setupCycleSpinner()
         setupTimePicker()
         setupDatePickers()
@@ -55,6 +57,13 @@ class AddEditMedicationActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener { finish() }
+    }
+
+    private fun setupMealTimingSpinner() {
+        val options = arrayOf("없음", "식전", "식후 30분", "식후 1시간", "식간")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, options)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerMealTiming.adapter = adapter
     }
 
     private fun setupCycleSpinner() {
@@ -143,9 +152,22 @@ class AddEditMedicationActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener {
             if (!validateInput()) return@setOnClickListener
 
+            val name = binding.etName.text.toString().trim()
+            val mealTiming = binding.spinnerMealTiming.selectedItem.toString()
+
+            // CommonDrugs에서 약 이름 매칭 → 성분/주의사항 자동 저장
+            val cautionText = CommonDrugs.list
+                .find { item ->
+                    val itemBase = item.name?.substringBefore("정")
+                        ?.substringBefore("액")
+                        ?.substringBefore("캡") ?: ""
+                    name.contains(itemBase, ignoreCase = true) ||
+                    itemBase.isNotBlank() && item.name?.contains(name, ignoreCase = true) == true
+                }?.warning ?: editMedication?.cautionText ?: ""
+
             val medication = Medication(
                 id = editMedication?.id ?: 0,
-                name = binding.etName.text.toString().trim(),
+                name = name,
                 times = selectedTimes.joinToString(","),
                 cycle = binding.spinnerCycle.selectedItem.toString(),
                 cycleDays = if (binding.spinnerCycle.selectedItem.toString() == "특정 요일")
@@ -153,14 +175,18 @@ class AddEditMedicationActivity : AppCompatActivity() {
                 startDate = binding.etStartDate.text.toString(),
                 endDate = binding.etEndDate.text.toString(),
                 memo = binding.etMemo.text.toString().trim(),
-                isActive = true
+                isActive = true,
+                mealTiming = mealTiming,
+                cautionText = cautionText
             )
 
             if (editMedication != null) {
+                com.example.yakyakyak.notification.AlarmScheduler.cancelAll(this, editMedication!!)
                 viewModel.update(medication)
+                com.example.yakyakyak.notification.AlarmScheduler.scheduleAll(this, medication)
                 Toast.makeText(this, "약 정보가 수정되었어요", Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.insert(medication)
+                viewModel.insertAndSchedule(this, medication)
                 Toast.makeText(this, "약이 등록되었어요 💊", Toast.LENGTH_SHORT).show()
             }
             finish()
@@ -220,6 +246,10 @@ class AddEditMedicationActivity : AppCompatActivity() {
                     binding.cbSat.isChecked = days.contains(6)
                     binding.cbSun.isChecked = days.contains(7)
                 }
+
+                val mealIndex = listOf("없음", "식전", "식후 30분", "식후 1시간", "식간")
+                    .indexOf(medication.mealTiming)
+                if (mealIndex >= 0) binding.spinnerMealTiming.setSelection(mealIndex)
 
                 binding.etStartDate.setText(medication.startDate)
                 binding.etEndDate.setText(medication.endDate)

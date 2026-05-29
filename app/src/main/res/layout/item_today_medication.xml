@@ -40,44 +40,64 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- 약 이름 -->
-        <TextView
-            android:id="@+id/tv_medication_name"
+        <!-- 가운데 콘텐츠 영역 -->
+        <LinearLayout
+            android:id="@+id/layout_center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:orientation="vertical"
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toEndOf="@id/tv_icon"
             app:layout_constraintEnd_toStartOf="@id/checkbox_taken"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_scheduled_time" />
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- 복용 시간 -->
-        <TextView
-            android:id="@+id/tv_scheduled_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/primary"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="2dp"
-            app:layout_constraintStart_toEndOf="@id/tv_icon"
-            app:layout_constraintEnd_toStartOf="@id/checkbox_taken"
-            app:layout_constraintTop_toBottomOf="@id/tv_medication_name"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <!-- 약 이름 -->
+            <TextView
+                android:id="@+id/tv_medication_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
 
-        <!-- 복용 완료 시간 -->
-        <TextView
-            android:id="@+id/tv_taken_at"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textColor="@color/success"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/checkbox_taken"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <!-- 복용 시간 (복용 방법 포함) -->
+            <TextView
+                android:id="@+id/tv_scheduled_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/primary"
+                android:layout_marginTop="2dp" />
+
+            <!-- 복용 완료 시간 or 식사 알람 설정 안내 -->
+            <TextView
+                android:id="@+id/tv_taken_at"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/success"
+                android:visibility="gone"
+                android:layout_marginTop="2dp" />
+
+            <!-- 식사 완료 버튼 (식후 약인 경우만 표시) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_meal_done"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="🍽️ 식사 완료"
+                android:textSize="11sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:visibility="gone"
+                android:layout_marginTop="6dp"
+                app:cornerRadius="16dp"
+                app:backgroundTint="@color/primary_light"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="1dp" />
+
+        </LinearLayout>
 
         <!-- 복용 완료 체크박스 -->
         <CheckBox

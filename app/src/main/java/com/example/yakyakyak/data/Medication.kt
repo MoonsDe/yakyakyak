@@ -20,7 +20,9 @@ data class Medication(
     val startDate: String,       // "2024-01-01"
     val endDate: String,         // "2024-03-31"
     val memo: String = "",
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val mealTiming: String = "없음",  // "없음" | "식전" | "식후 30분" | "식후 1시간" | "식간"
+    val cautionText: String = ""      // 성분 정보 (약물 상호작용 체크용)
 ) {
     fun getTimeList(): List<String> =
         if (times.isBlank()) emptyList()

@@ -31,5 +31,7 @@ data class MedicationLog(
     val date: String,
     val scheduledTime: String,
     val isTaken: Boolean = false,
-    val takenAt: String? = null
+    val takenAt: String? = null,
+    val mealTiming: String = "없음",  // 복용 방법 (Medication에서 복사)
+    val mealDoneAt: String? = null    // "식사 완료" 버튼 누른 시각
 )

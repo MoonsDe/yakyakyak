@@ -46,5 +46,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun setMealDone(log: MedicationLog) {
+        viewModelScope.launch {
+            repository.updateMealDone(log)
+        }
+    }
+
     val allActiveMedications = repository.allActiveMedications
 }

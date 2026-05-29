@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
@@ -8,14 +9,30 @@
         android:id="@+id/homeFragment"
         android:name="com.example.yakyakyak.ui.home.HomeFragment"
         android:label="홈"
-        tools:layout="@layout/fragment_home"
-        xmlns:tools="http://schemas.android.com/tools" />
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/medicationListFragment"
         android:name="com.example.yakyakyak.ui.medication.MedicationListFragment"
         android:label="내 약"
-        tools:layout="@layout/fragment_medication_list"
-        xmlns:tools="http://schemas.android.com/tools" />
+        tools:layout="@layout/fragment_medication_list" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.yakyakyak.ui.history.HistoryFragment"
+        android:label="기록"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/memoFragment"
+        android:name="com.example.yakyakyak.ui.memo.MemoFragment"
+        android:label="메모"
+        tools:layout="@layout/fragment_memo" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.yakyakyak.ui.search.SearchFragment"
+        android:label="검색"
+        tools:layout="@layout/fragment_search" />
 
 </navigation>

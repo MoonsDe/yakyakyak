@@ -69,12 +69,19 @@ class MedicationRepository(private val dao: MedicationDao) {
                             medicationName = med.name,
                             date = todayStr,
                             scheduledTime = time,
-                            isTaken = false
+                            isTaken = false,
+                            mealTiming = med.mealTiming
                         )
                     )
                 }
             }
         }
+    }
+
+    suspend fun updateMealDone(log: MedicationLog) {
+        val now = java.time.LocalTime.now()
+            .format(DateTimeFormatter.ofPattern("HH:mm"))
+        dao.updateLog(log.copy(mealDoneAt = now))
     }
 
     /**

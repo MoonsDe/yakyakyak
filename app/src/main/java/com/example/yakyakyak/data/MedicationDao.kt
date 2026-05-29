@@ -20,6 +20,9 @@ interface MedicationDao {
     @Query("SELECT * FROM medications WHERE isActive = 1 ORDER BY name ASC")
     fun getAllActiveMedications(): LiveData<List<Medication>>
 
+    @Query("SELECT * FROM medications WHERE isActive = 1 ORDER BY name ASC")
+    suspend fun getAllActiveMedicationsSync(): List<Medication>
+
     @Query("SELECT * FROM medications ORDER BY name ASC")
     fun getAllMedications(): LiveData<List<Medication>>
 

@@ -1,5 +1,6 @@
 package com.example.yakyakyak.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toast
 import com.example.yakyakyak.data.AppDatabase
 import com.example.yakyakyak.data.MedicationLog
 import com.example.yakyakyak.databinding.FragmentHomeBinding
+import com.example.yakyakyak.notification.AlarmScheduler
 import com.example.yakyakyak.repository.MedicationRepository
+import com.example.yakyakyak.ui.medication.AddEditMedicationActivity
+import com.example.yakyakyak.util.DrugInteractionChecker
 import com.example.yakyakyak.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -45,6 +50,10 @@ class HomeFragment : Fragment() {
         setupDate()
         setupRecyclerView()
         observeData()
+
+        binding.fabAdd.setOnClickListener {
+            startActivity(Intent(requireContext(), AddEditMedicationActivity::class.java))
+        }
     }
 
     private fun setupDate() {
@@ -54,9 +63,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = TodayMedicationAdapter { log ->
-            viewModel.toggleTaken(log)
-        }
+        adapter = TodayMedicationAdapter(
+            onToggle = { log -> viewModel.toggleTaken(log) },
+            onMealDone = { log ->
+                viewModel.setMealDone(log)
+                AlarmScheduler.scheduleMealDelayed(
+                    requireContext(), log.medicationId, log.medicationName, log.mealTiming
+                )
+                val delay = if (log.mealTiming == "식후 30분") "30분" else "1시간"
+                Toast.makeText(requireContext(), "식사 완료! $delay 후 알람이 울려요 🔔", Toast.LENGTH_SHORT).show()
+            }
+        )
         binding.recyclerViewToday.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@HomeFragment.adapter
@@ -64,12 +81,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeData() {
-        // 활성화된 약 목록 → 오늘 로그 자동 생성
+        // 활성화된 약 목록 → 오늘 로그 자동 생성 + 약물 상호작용 체크
         viewModel.allActiveMedications.observe(viewLifecycleOwner) { medications ->
             if (!medications.isNullOrEmpty()) {
                 lifecycleScope.launch {
                     repository.ensureTodayLogs(medications)
                 }
+            }
+
+            // 약물 상호작용 경고
+            val warnings = DrugInteractionChecker.check(medications ?: emptyList())
+            if (warnings.isNotEmpty()) {
+                binding.cardInteractionWarning.visibility = View.VISIBLE
+                binding.tvInteractionMessage.text = warnings.joinToString("\n\n")
+            } else {
+                binding.cardInteractionWarning.visibility = View.GONE
             }
         }
 
